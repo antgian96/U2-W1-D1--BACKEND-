@@ -1,14 +1,19 @@
-package pizzeria.demo;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Arrays;
 
 @Configuration
+@PropertySource("classpath:application.properties")
 public class PizzeriaConfig {
+
+	@Value("${coperto.costo}")
+	private double costoCoperto;
 
 	@Bean
 	public Topping prosciutto() {
@@ -18,11 +23,6 @@ public class PizzeriaConfig {
 	@Bean
 	public Topping ananas() {
 		return new Topping("Ananas", 1.2);
-	}
-
-	@Bean
-	public Topping doppioProsciutto() {
-		return new Topping("Doppio Prosciutto", 2.0);
 	}
 
 	@Bean
@@ -51,7 +51,22 @@ public class PizzeriaConfig {
 	}
 
 	@Bean
+	public Tavolo tavolo1() {
+		return new Tavolo(1, 4, "libero");
+	}
+
+	@Bean
 	public Menu menu() {
 		return new Menu(Arrays.asList(margherita(), hawaiian()), Arrays.asList(cocaCola(), acqua()));
 	}
+
+	@Bean
+	public CommandLineRunner run(Menu menu, Tavolo tavolo1) {
+		return args -> {
+			tavolo1.setStato("occupato");
+			Ordine ordine = new Ordine(1, tavolo1, 4, Arrays.asList(margherita(), hawaiian()), Arrays.asList(cocaCola(), acqua()), costoCoperto);
+			ordine.stampaOrdine();
+		};
+	}
 }
+
