@@ -1,39 +1,17 @@
-package pizzeria.demo;
-
+@Entity
 public class Pizza {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String nome;
     private double prezzo;
-    private List<Topping> toppings;
 
-    public Pizza(String nome, double prezzo) {
-        this.nome = nome;
-        this.prezzo = prezzo;
-        this.toppings = new ArrayList<>();
-    }
+    @ManyToMany
+    @JoinTable(name = "pizza_topping",
+            joinColumns = @JoinColumn(name = "pizza_id"),
+            inverseJoinColumns = @JoinColumn(name = "topping_id"))
+    private List<Topping> toppings = new ArrayList<>();
 
-    public void aggiungiTopping(Topping topping) {
-        toppings.add(topping);
-    }
-
-    public string getNome() {
-        String toppingsName = toppings.stream()
-                .map(Topping::getNome)
-                .collect(Collectors.joining8(" + "));
-        return nome + (toppings.isEmpty() ? "" : "( " + toppingsNames + ")");
-    }
-
-    public double getPrezzo() {
-        double prezzoTotale = prezzo;
-        for (Topping topping : toppings) {
-            prezzoTotale += topping.getPrezzo();
-        }
-        return prezzoTotale;
-    }
-
-    public String getInformazioniNutrizionali() {
-        return "Calorie:" + (int) (prezzo * 100);
-    }
-    }
-
-
+    // Getters e Setters
 }
+
